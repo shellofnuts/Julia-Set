@@ -7,8 +7,8 @@
 
 using Complex = std::complex<double>;
 
-Complex C(-0.8, 0.156);
-int MAX_ITER = 2000;
+Complex C(0.285, 0.01);
+const int MAX_ITER = 800;
 
 void julia_set();
 Complex polynomial(Complex z);

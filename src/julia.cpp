@@ -50,12 +50,11 @@ void calc_fractal(Window<int> &scrn, Window<double> &frac, std::vector<int> &col
     }
 }
 
-void julia_set()
+void julia_set(const char *filename)
 {
-    Window<int> screen(0, 1200, 0, 1200);
+    Window<int> screen(0, 3000, 0, 3000);
     Window<double> fractal(-1.5, 1.5, -1.5, 1.5);
 
-    const char *filename = "Julia_Set.png";
     std::vector<int> colours(screen.size());
 
     calc_fractal(screen, fractal, colours);
@@ -64,5 +63,7 @@ void julia_set()
 }
 
 int main(){
-    julia_set();
+    julia_set("Julia_Set_1.png");
+    C = Complex(-0.70176, -0.3842);
+    julia_set("Julia_Set_2.png");
 }
