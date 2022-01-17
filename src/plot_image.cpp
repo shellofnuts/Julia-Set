@@ -13,21 +13,20 @@ std::tuple<int, int, int> get_RGBDiscreteColours(int colour_index, int max_iters
     // Imagine our colour value corresponds to a "row-order" style coordinate
     // in our RGB 3D matrix
 
-    int b = colour_index / (N * N);
-    int less_b = colour_index - (b * N * N);
-    int r = less_b / N;
-    int g = less_b - (r * N);
+    int r = colour_index / (N * N);
+    int less_r = colour_index - (r * N * N);
+    int g = less_r / N;
+    int b = less_r - (g * N);
 
     return std::tuple<int, int, int>(r, g, b);
 }
 
-std::tuple<int, int, int> get_RGBContinuousColours(int colour_index, int max_iters)
+std::tuple<int, int, int> get_RGBLinearBW(int colour_index, int max_iters)
 {
-    double tmp = (double) colour_index / (double) max_iters;
-
-    int r = (int) 9 * (1 - tmp) * pow(tmp, 3) * 255;
-    int g = (int) 15 * pow((1-tmp), 2) * pow(tmp, 2) * 255;
-    int b = (int) 8.5 * pow((1 - tmp), 3) * tmp * 255;
+    double scale = (double) colour_index / (double) max_iters;
+    int r = (int) scale * 255;
+    int g = (int) scale * 255;
+    int b = (int) scale * 255;
 
     return std::tuple<int, int, int>(r, g, b);
 }
@@ -44,7 +43,7 @@ void plot(Window<int> &screen, std::vector<int> colours, int max_iter, const cha
     {
         for (int i = screen.x_min(); i < screen.x_max(); ++i)
         {
-            rgb = get_RGBContinuousColours(colours[k], max_iter);
+            rgb = get_RGBDiscreteColours(colours[k], max_iter);
 
             RGBQUAD bitcolours;
             bitcolours.rgbRed = std::get<0>(rgb);
