@@ -1,0 +1,46 @@
+@startuml Julia_Set
+
+class Window
+{
+    - _max_x : int
+    - _min_x : int
+    - _max_y : int
+    - _min_y : int
+
+    + T height()
+    + T width()
+    + T size()
+}
+
+class JuliaSet
+{
+    - screen : Window<int>
+    - fractal : Window<double>
+    - colours : std::vector<int>
+
+    + void calcFractal()
+    + void plotFractal()
+}
+
+class plotImage
+{
+    - *bitmap : FIBITMAP
+    - rgb : std::tuple<int,int,int>
+
+    - std::tuple<int,int,int> get_RGBDiscreteColours(...)
+    + void plot(...)
+}
+
+package FreeImage[
+    FIBITMAP
+    RGBQUAD
+    FreeImage_Allocate()
+    FreeImage_Save()
+    FreeImage_Unload()
+]
+
+FreeImage -- plotImage
+Window "2" --* JuliaSet
+JuliaSet --> plotImage
+
+@enduml

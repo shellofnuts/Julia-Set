@@ -7,9 +7,9 @@
 
 std::tuple<int, int, int> get_RGBDiscreteColours(int colour_index, int max_iters)
 {
-    int N = 256;            // RGB has 256 values on each channel
-    int N3 = N * N * N;     // Our RGB space as a 3D matrix with 256 points on each axis
-    
+    int N = 255;        // RGB has 256 values on each channel
+    int N3 = N * N * N; // Our RGB space as a 3D matrix with 256 points on each axis
+
     // Imagine our colour value corresponds to a "row-order" style coordinate
     // in our RGB 3D matrix
 
@@ -23,15 +23,15 @@ std::tuple<int, int, int> get_RGBDiscreteColours(int colour_index, int max_iters
 
 std::tuple<int, int, int> get_RGBLinearBW(int colour_index, int max_iters)
 {
-    double scale = (double) colour_index / (double) max_iters;
-    int r = (int) scale * 255;
-    int g = (int) scale * 255;
-    int b = (int) scale * 255;
+    double scale = (double)colour_index / (double)max_iters;
+    int r = (int)scale * 255;
+    int g = (int)scale * 255;
+    int b = (int)scale * 255;
 
     return std::tuple<int, int, int>(r, g, b);
 }
 
-void plot(Window<int> &screen, std::vector<int> colours, int max_iter, const char *filename)
+void plot(Window<int> &screen, std::vector<int> &colours, int max_iter, const char *filename)
 {
     unsigned int width = screen.width(), height = screen.height();
     FIBITMAP *bitmap = FreeImage_Allocate(width, height, 32);
@@ -49,7 +49,7 @@ void plot(Window<int> &screen, std::vector<int> colours, int max_iter, const cha
             bitcolours.rgbRed = std::get<0>(rgb);
             bitcolours.rgbGreen = std::get<1>(rgb);
             bitcolours.rgbBlue = std::get<2>(rgb);
-            bitcolours.rgbReserved = 255;   // Set alpha to solid colour.
+            bitcolours.rgbReserved = 255; // Set alpha to solid colour.
 
             FreeImage_SetPixelColor(bitmap, i, j, &bitcolours);
             ++k;

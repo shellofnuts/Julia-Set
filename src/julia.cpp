@@ -8,62 +8,65 @@
 
 using Complex = std::complex<double>;
 
-Complex polynomial(Complex z) { return z*z + C; }
+Complex JuliaSet::polynomial(Complex z) { return z*z + _C; }
 
-Complex scale(Window<int> &scrn, Window<double> &frac, Complex z)
+Complex JuliaSet::scale(Complex z)
 {
     Complex rescaled;
-    rescaled.real((z.real() - scrn.y_min()) * (frac.height() / scrn.height()) + frac.y_min());
-    rescaled.imag((z.imag() - scrn.x_min()) * (frac.width() / scrn.width()) + frac.x_min());
+    rescaled.real((z.real() - screen.y_min()) * (fractal.height() / screen.height()) + fractal.y_min());
+    rescaled.imag((z.imag() - screen.x_min()) * (fractal.width() / screen.width()) + fractal.x_min());
     return rescaled;
 }
 
-int get_iterations(Complex z)
+int JuliaSet::get_iterations(Complex z)
 {
     int iter = 0;
-    while (abs(z) < 2.0 && iter <= MAX_ITER)
+    while (abs(z) < 1.0 && iter <= MAX_ITER)
     {
-        z = polynomial(z);
+        z = this->polynomial(z);
         ++iter;
     }
     
     return iter;
 }
 
-void calc_fractal(Window<int> &scrn, Window<double> &frac, std::vector<int> &colours)
+void JuliaSet::calc_fractal()
 {
     int k = 0, progress = 0;
-    for (int j = scrn.y_min(); j < scrn.y_max(); ++j)
+    for (int j = screen.y_min(); j < screen.y_max(); ++j)
     {
-        for (int i = scrn.x_min(); i < scrn.x_max(); ++i)
+        for (int i = screen.x_min(); i < screen.x_max(); ++i)
         {
             Complex z((double) i, (double) j);
-            z = scale(scrn, frac, z);
-            colours[k] = get_iterations(z);
+            z = this->scale(z);
+            colours[k] = this->get_iterations(z);
             ++k;
         }
-        if (progress < (int)((j - scrn.y_min())/(scrn.height())*100.0))
+        if (progress < (int)((j - screen.y_min())/(screen.height())*100))
         {
-            progress = (int)((j - scrn.y_min())/(scrn.height())*100.0);
-            std::cout << progress << "\n";
+            progress = (int)((j - screen.y_min())/(screen.height())*100);
+            std::cout << progress << std::endl;
         }
     }
 }
 
-void julia_set(const char *filename)
+void JuliaSet::plotFractal()
 {
-    Window<int> screen(0, 3000, 0, 3000);
-    Window<double> fractal(-1.5, 1.5, -1.5, 1.5);
+    plot(screen, colours, MAX_ITER, _filename);
+}
 
-    std::vector<int> colours(screen.size());
+void JuliaSet::setHeight(double height)
+{
+    fractal = Window<double>(fractal.x_min(), fractal.x_max(), -1 * height / 2, height / 2);
+}
 
-    calc_fractal(screen, fractal, colours);
-
-    plot(screen, colours, MAX_ITER, filename);
+void JuliaSet::setWidth(double width)
+{
+    fractal = Window<double>(-1 * width / 2, width / 2, fractal.y_min(), fractal.y_max());
 }
 
 int main(){
-    julia_set("Julia_Set_1.png");
-    C = Complex(-0.70176, -0.3842);
-    julia_set("Julia_Set_2.png");
+    JuliaSet image1("Julia_Set_1.png");
+    image1.calc_fractal();
+    image1.plotFractal();
 }
